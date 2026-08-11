@@ -1,8 +1,8 @@
 # shanezshertz-go
 
-Redirect service for Shanez Shertz product links, per the brand bible's rule that outbound product links must never point straight at a marketplace (they change; our links don't).
+Redirect service for Shanez Shertz product and collection links, per the brand bible's rule that outbound links must never point straight at a marketplace (they change; our links don't).
 
-Live at `go.shanezshertz.shop` via GitHub Pages. `go.shanezshertz.shop/wt-014` redirects to wherever design `wt-014` is currently sold.
+Live at `go.shanezshertz.shop` via GitHub Pages. `go.shanezshertz.shop/wt-014` redirects to product `wt-014`, and `go.shanezshertz.shop/wilderness-therapy-group` redirects to the collection.
 
 ## How it works
 
