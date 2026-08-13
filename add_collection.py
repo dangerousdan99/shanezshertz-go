@@ -12,15 +12,18 @@ real examples):
   "collection_slug": "daily-coping-co",
   "album_url": "https://www.teepublic.com/user/shanezshertz/albums?album=...",
   "designs": [
-    {"file": "some_design.png", "title": "Some Design", "url": "https://www.teepublic.com/t-shirt/..."},
+    {"slug": "dc-001", "file": "some_design.png", "title": "Some Design", "url": "https://www.teepublic.com/t-shirt/..."},
     ...
   ]
 }
 
-Slugs are assigned <prefix>-001, <prefix>-002, ... in alphabetical order by
-title (the established convention — see wt-NNN, dc-NNN). Re-running with an
-unchanged source file is a no-op (idempotent): it overwrites only this
-prefix's own keys, so it's always safe to re-run after edits.
+Every design must already have a "slug" — this script does not assign
+them. Run ShanezShertz/scripts/gen_design_index.py first; it assigns a
+permanent slug to any new design (never renumbering existing ones) and
+writes it back into source.json. This script then just copies
+slug -> url pairs into redirects.json. Re-running with an unchanged
+source file is a no-op (idempotent): it overwrites only this prefix's own
+keys, so it's always safe to re-run after edits.
 """
 
 import argparse
@@ -34,11 +37,14 @@ REDIRECTS_PATH = ROOT / "redirects.json"
 
 
 def compute_entries(source: dict) -> dict:
-    prefix = source["prefix"]
-    designs = sorted(source["designs"], key=lambda d: d["title"])
-    entries = {
-        f"{prefix}-{i:03d}": d["url"] for i, d in enumerate(designs, start=1)
-    }
+    missing = [d["title"] for d in source["designs"] if not d.get("slug")]
+    if missing:
+        raise ValueError(
+            f"{len(missing)} design(s) have no slug yet: {', '.join(missing)}. "
+            f"Run ShanezShertz/scripts/gen_design_index.py on this collection "
+            f"first to assign slugs, then re-run this script."
+        )
+    entries = {d["slug"]: d["url"] for d in source["designs"]}
     entries[source["collection_slug"]] = source["album_url"]
     return entries
 
