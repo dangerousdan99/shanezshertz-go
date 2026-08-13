@@ -9,7 +9,6 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-REDIRECTS = json.loads((ROOT / "redirects.json").read_text(encoding="utf-8"))
 DOCS = ROOT / "docs"
 
 PAGE_TEMPLATE = """<!doctype html>
@@ -41,8 +40,13 @@ INDEX_PAGE = """<!doctype html>
 
 
 def build():
+    # Read fresh on every call, not at import time - add_collection.py imports
+    # this module and calls build() right after writing redirects.json, and a
+    # module-level constant would silently rebuild from stale pre-write data.
+    redirects = json.loads((ROOT / "redirects.json").read_text(encoding="utf-8"))
+
     DOCS.mkdir(exist_ok=True)
-    for slug, target in REDIRECTS.items():
+    for slug, target in redirects.items():
         page_dir = DOCS / slug
         page_dir.mkdir(exist_ok=True)
         html = PAGE_TEMPLATE.format(target=target, target_json=json.dumps(target))
@@ -52,7 +56,7 @@ def build():
     (DOCS / "CNAME").write_text("go.shanezshertz.shop\n", encoding="utf-8")
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
 
-    print(f"Built {len(REDIRECTS)} redirect pages into {DOCS}")
+    print(f"Built {len(redirects)} redirect pages into {DOCS}")
 
 
 if __name__ == "__main__":
