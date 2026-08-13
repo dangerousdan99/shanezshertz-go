@@ -53,10 +53,10 @@ def main():
     )
     args = parser.parse_args()
 
-    source = json.loads(args.source_file.read_text())
+    source = json.loads(args.source_file.read_text(encoding="utf-8"))
     new_entries = compute_entries(source)
 
-    redirects = json.loads(REDIRECTS_PATH.read_text())
+    redirects = json.loads(REDIRECTS_PATH.read_text(encoding="utf-8"))
     before = dict(redirects)
     redirects.update(new_entries)
 
@@ -87,7 +87,9 @@ def main():
         print("redirects.json already up to date, skipping rebuild")
         return
 
-    REDIRECTS_PATH.write_text(json.dumps(redirects, indent=2) + "\n")
+    REDIRECTS_PATH.write_text(
+        json.dumps(redirects, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
     build_module.build()
 
 

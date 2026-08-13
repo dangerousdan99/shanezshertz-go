@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-REDIRECTS = json.loads((ROOT / "redirects.json").read_text())
+REDIRECTS = json.loads((ROOT / "redirects.json").read_text(encoding="utf-8"))
 DOCS = ROOT / "docs"
 
 PAGE_TEMPLATE = """<!doctype html>
@@ -46,11 +46,11 @@ def build():
         page_dir = DOCS / slug
         page_dir.mkdir(exist_ok=True)
         html = PAGE_TEMPLATE.format(target=target, target_json=json.dumps(target))
-        (page_dir / "index.html").write_text(html)
+        (page_dir / "index.html").write_text(html, encoding="utf-8")
 
-    (DOCS / "index.html").write_text(INDEX_PAGE)
-    (DOCS / "CNAME").write_text("go.shanezshertz.shop\n")
-    (DOCS / ".nojekyll").write_text("")
+    (DOCS / "index.html").write_text(INDEX_PAGE, encoding="utf-8")
+    (DOCS / "CNAME").write_text("go.shanezshertz.shop\n", encoding="utf-8")
+    (DOCS / ".nojekyll").write_text("", encoding="utf-8")
 
     print(f"Built {len(REDIRECTS)} redirect pages into {DOCS}")
 
