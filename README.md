@@ -15,4 +15,14 @@ Live at `go.shanezshertz.shop` via GitHub Pages. `go.shanezshertz.shop/wt-014` r
 2. Run `python build.py`.
 3. Commit and push `redirects.json` and the regenerated `docs/`.
 
+## Adding a new collection's slugs
+
+Don't hand-edit `redirects.json` for a whole new collection — use `add_collection.py`:
+
+```
+python add_collection.py path/to/source.json
+```
+
+The source file (one per collection, lives alongside that collection's designs in the [ShanezShertz](https://github.com/dangerousdan99/ShanezShertz) repo, e.g. `designs/Daily Coping Co/source.json`) lists each design's filename, Teepublic title, and Teepublic URL, plus the collection's own slug and album URL. The script assigns `<prefix>-001`, `<prefix>-002`, ... alphabetically by title (matching the existing `wt-NNN`/`dc-NNN` convention), merges them into `redirects.json`, and rebuilds. Re-running it with the same source file is a no-op — safe to run again after editing. Pass `--dry-run` to preview without writing.
+
 This repo contains no brand copy, designs, or other Shanez Shertz IP — just the slug → URL mapping and the static pages that serve it, which is why it's public while the main [ShanezShertz](https://github.com/dangerousdan99/ShanezShertz) repo stays private.
